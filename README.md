@@ -338,9 +338,9 @@ We track focus areas and contributions rather than inflated statistics. This tab
 
 | Member | Machines | Challenges | Focus Area |
 |---|---|---|---|
-| Member 1 | — | — | Networking |
-| Member 2 | — | — | Web |
-| Member 3 | — | — | Active Directory |
+| Ziad | — | — |Active Directory  |
+| Walid | — | — | Web |
+| Souhayl | — | — | Networking |
 
 Progress here is measured by depth of understanding and quality of documentation, not by raw counts.
 
@@ -412,8 +412,8 @@ Unauthorized testing against systems you do not own or have explicit permission 
 
 | Name | GitHub | Focus Area |
 |---|---|---|
-| — | — | — |
-| — | — | — |
+| Souhayl | https://github.com/souhvyl123 | Networking |
+| Walid | https://github.com/Over0010 | Web |
 
 *(Contributors are added as the team and repository grow.)*
 
