@@ -415,7 +415,6 @@ Unauthorized testing against systems you do not own or have explicit permission 
 | Souhayl | https://github.com/souhvyl123 | Networking |
 | Walid | https://github.com/Over0010 | Web |
 
-*(Contributors are added as the team and repository grow.)*
 
 ---
 
