@@ -189,6 +189,10 @@ HackTheBox-Writeups/
 │   ├── Web/
 │   ├── Crypto/
 │   ├── Forensics/
+│   │   └── Brutus/
+│   │       ├── README.md
+│   │       ├── Incident-Report.md
+│   │       └── screenshots/
 │   ├── Reversing/
 │   ├── Pwn/
 │   └── Misc/
@@ -197,7 +201,7 @@ HackTheBox-Writeups/
 │   ├── Cheatsheets/
 │   ├── Enumeration/
 │   └── Methodologies/
-│
+│       └── Report-Template.md
 ├── Scripts/
 │
 ├── Assets/
