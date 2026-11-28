@@ -180,36 +180,76 @@ These are tools we use and are learning to use effectively — not a claim of ma
 ```text
 HackTheBox-Writeups/
 │
-├── Machines/
-│   ├── Easy/
-│   ├── Medium/
-│   └── Hard/
+├── .gitignore
+├── README.md
+│
+├── Assets/
 │
 ├── Challenges/
-│   ├── Web/
 │   ├── Crypto/
 │   ├── Forensics/
-│   │   └── Brutus/
-│   │       ├── README.md
-│   │       ├── Incident-Report.md
-│   │       └── screenshots/
-│   ├── Reversing/
+│   ├── Hardware/
+│   ├── Misc/
+│   ├── Mobile/
+│   ├── OSINT/
 │   ├── Pwn/
-│   └── Misc/
+│   ├── Reversing/
+│   ├── Stego/
+│   └── Web/
+│
+├── Fortresses/
+│
+├── Machines/
+│   ├── Easy/
+│   ├── Hard/
+│   ├── Insane/
+│   └── Medium/
+│
+├── Pro-Labs/
 │
 ├── Resources/
 │   ├── Cheatsheets/
 │   ├── Enumeration/
 │   └── Methodologies/
 │       └── Report-Template.md
+│
 ├── Scripts/
 │
-├── Assets/
+├── Sherlocks/
+│   ├── Cloud/
+│   ├── DFIR/
+│   │   └── Brutus/
+│   │       ├── README.md
+│   │       ├── Incident-Report.md
+│   │       ├── screenshots/
+│   │       │   ├── 01-archive-listing.png
+│   │       │   ├── 02-unzip-error.png
+│   │       │   ├── 03-extraction-ok.png
+│   │       │   ├── 04-auth-log-bruteforce.png
+│   │       │   ├── 05-accepted-logins.png
+│   │       │   ├── 06-wtmp-utmp.png
+│   │       │   ├── 07-session-37.png
+│   │       │   ├── 08-useradd.png
+│   │       │   ├── 09-cyberjunkie-activity.png
+│   │       │   ├── 10-sudo-commands.png
+│   │       │   ├── 11-mitre-homepage.png
+│   │       │   └── 12-mitre-t1136.png
+│   │       │
+│   │       └── scripts/
+│   │
+│   ├── Malware-Analysis/
+│   ├── SOC/
+│   ├── Threat-Hunting/
+│   └── Threat-Intelligence/
 │
-└── README.md
+├── Starting-point/
+│
+└── Tracks/
 ```
 
-Machines are grouped by difficulty; challenges are grouped by category. `Resources/` holds reusable cheatsheets and enumeration checklists distilled from our own writeups, and `Scripts/` holds small helper scripts we build along the way.
+Machines are organized by difficulty, while Challenges are categorized by technical domain. Sherlocks have their own dedicated directory, with investigations organized by category. The Brutus investigation is documented under `Sherlocks/DFIR/`, including its README, incident report, screenshots, and supporting scripts.
+
+`Fortresses/`, `Pro-Labs/`, `Starting-point/`, and `Tracks/` maintain separate spaces for their respective Hack The Box activities. `Resources/` contains reusable cheatsheets, enumeration references, and reporting methodologies, while `Scripts/` and `Assets/` hold shared supporting materials.
 
 ---
 
